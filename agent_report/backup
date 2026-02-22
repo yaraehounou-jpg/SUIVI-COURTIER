@@ -1,0 +1,10 @@
+status
+Filtre sur le type moto = 1000 replace on select product all values by 1000  
+    
+    'status', filter PAID
+
+ 'quote.vtc', fillna(0)
+    'quote.quoteValues.detailsPrime.cedeao', fillna(0)
+    'quote.quoteValues.listeGaranties.garantieVie', fillna(0)
+    'isRenewal' fillna(FAUX)
+    'contractDuration'/30,
