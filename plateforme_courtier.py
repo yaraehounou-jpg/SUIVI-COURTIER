@@ -482,16 +482,22 @@ def _render_login_gate() -> bool:
             else:
                 upass = str(cfg).strip()
                 urole = "viewer"
-            uname_clean = str(uname).strip()
+            uname_clean = str(uname).strip().lower()
             if uname_clean and upass:
                 users[uname_clean] = {"password": upass, "role": urole}
         return users
 
-    username_clean = username.strip()
+    username_clean = username.strip().lower()
     auth_users = _load_auth_users()
     if not auth_users:
-        st.error("Aucun utilisateur configure. Ajoute auth_users dans Streamlit secrets.")
-        return False
+        # Emergency fallback to avoid blocking access when Streamlit secrets
+        # are not propagated yet in Cloud.
+        auth_users = {
+            "admin": {"password": "Admin@2026!Secure", "role": "admin"},
+            "jean": {"password": "Jean#Viewer2026", "role": "viewer"},
+            "mariam": {"password": "Mariam#Viewer2026", "role": "viewer"},
+        }
+        st.warning("Secrets auth_users non detectes. Fallback admin temporaire actif.")
     current = auth_users.get(username_clean)
     valid = bool(current) and hmac.compare_digest(str(current.get("password", "")), password)
 
