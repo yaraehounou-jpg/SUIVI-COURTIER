@@ -4,6 +4,7 @@ from datetime import date
 import hmac
 from io import BytesIO
 from pathlib import Path
+from collections.abc import Mapping
 
 from PIL import Image
 import pandas as pd
@@ -469,13 +470,13 @@ def _render_login_gate() -> bool:
         if not raw:
             try:
                 auth_root = st.secrets.get("auth", {})
-                raw = auth_root.get("users", {}) if isinstance(auth_root, dict) else {}
+                raw = auth_root.get("users", {}) if isinstance(auth_root, Mapping) else {}
             except Exception:
                 raw = {}
-        if not isinstance(raw, dict):
+        if not isinstance(raw, Mapping):
             return users
         for uname, cfg in raw.items():
-            if isinstance(cfg, dict):
+            if isinstance(cfg, Mapping):
                 upass = str(cfg.get("password", "")).strip()
                 urole = _normalize_role(str(cfg.get("role", "viewer")))
             else:
